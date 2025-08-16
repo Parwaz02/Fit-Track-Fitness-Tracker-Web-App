@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FitTrack — Fitness Tracker</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="logo">🏃‍♀️</span>
+      <h1>FitTrack</h1>
+    </div>
+    <div class="header-actions">
+      <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Primary">
+    <button class="tab active" data-tab="dashboard" role="tab" aria-selected="true">Dashboard</button>
+    <button class="tab" data-tab="workouts" role="tab" aria-selected="false">Workouts</button>
+    <button class="tab" data-tab="timer" role="tab" aria-selected="false">Timer</button>
+    <button class="tab" data-tab="settings" role="tab" aria-selected="false">Settings</button>
+  </nav>
+
+  <main>
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="tab-panel active" role="tabpanel" aria-labelledby="Dashboard">
+      <div class="grid kpis">
+        <div class="card ring-card">
+          <h3>Steps</h3>
+          <div class="ring" id="ring-steps" data-value="0" data-goal="8000">
+            <div class="ring-number"><span id="steps-today">0</span><small>/8k</small></div>
+          </div>
+          <div class="muted">Today</div>
+        </div>
+
+        <div class="card ring-card">
+          <h3>Active Minutes</h3>
+          <div class="ring" id="ring-mins" data-value="0" data-goal="30">
+            <div class="ring-number"><span id="mins-today">0</span><small>/30</small></div>
+          </div>
+          <div class="muted">Today</div>
+        </div>
+
+        <div class="card ring-card">
+          <h3>Calories Burned</h3>
+          <div class="ring" id="ring-cals" data-value="0" data-goal="500">
+            <div class="ring-number"><span id="cals-today">0</span><small>/500</small></div>
+          </div>
+          <div class="muted">Today</div>
+        </div>
+      </div>
+
+      <div class="grid two">
+        <!-- Quick Add -->
+        <div class="card">
+          <div class="card-head">
+            <h3>Quick Add Workout</h3>
+          </div>
+          <form id="quick-add" class="form grid two">
+            <label>
+              <span>Type</span>
+              <select id="qa-type" required>
+                <option value="Run">Run</option>
+                <option value="Walk">Walk</option>
+                <option value="Cycling">Cycling</option>
+                <option value="HIIT">HIIT</option>
+                <option value="Yoga">Yoga</option>
+                <option value="Strength">Strength</option>
+              </select>
+            </label>
+            <label>
+              <span>Duration (min)</span>
+              <input id="qa-duration" type="number" min="1" step="1" required placeholder="30" />
+            </label>
+            <label>
+              <span>Calories</span>
+              <input id="qa-calories" type="number" min="1" step="1" required placeholder="250" />
+            </label>
+            <label>
+              <span>Steps (optional)</span>
+              <input id="qa-steps" type="number" min="0" step="1" placeholder="3000" />
+            </label>
+            <label class="full">
+              <span>Notes (optional)</span>
+              <input id="qa-notes" type="text" maxlength="80" placeholder="Evening run, felt great" />
+            </label>
+            <div class="actions full">
+              <button class="btn" type="submit">Add Workout</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Recent Workouts -->
+        <div class="card">
+          <div class="card-head">
+            <h3>Recent Workouts</h3>
+          </div>
+          <ul id="recent-list" class="list"></ul>
+        </div>
+      </div>
+
+      <!-- Weekly chart -->
+      <div class="card">
+        <div class="card-head">
+          <h3>This Week</h3>
+          <div class="chips">
+            <button class="chip active" data-metric="minutes">Minutes</button>
+            <button class="chip" data-metric="calories">Calories</button>
+            <button class="chip" data-metric="steps">Steps</button>
+          </div>
+        </div>
+        <div id="bar-chart" class="bar-chart" aria-label="Weekly progress chart"></div>
+      </div>
+    </section>
+
+    <!-- WORKOUTS -->
+    <section id="workouts" class="tab-panel" role="tabpanel" aria-labelledby="Workouts">
+      <div class="card">
+        <div class="card-head">
+          <h3>All Workouts</h3>
+          <div class="filters">
+            <input id="search-workouts" type="search" placeholder="Search type/notes…" />
+            <select id="filter-type">
+              <option value="">All Types</option>
+              <option>Run</option><option>Walk</option><option>Cycling</option>
+              <option>HIIT</option><option>Yoga</option><option>Strength</option>
+            </select>
+          </div>
+        </div>
+        <table class="table" aria-label="Workouts table">
+          <thead>
+            <tr>
+              <th>Date</th><th>Type</th><th>Duration</th><th>Calories</th><th>Steps</th><th>Notes</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="workouts-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TIMER -->
+    <section id="timer" class="tab-panel" role="tabpanel" aria-labelledby="Timer">
+      <div class="card timer-card">
+        <h3>Workout Timer</h3>
+        <div class="timer-display" id="timer-display">00:00:00</div>
+        <div class="timer-controls">
+          <select id="timer-type">
+            <option value="Run">Run</option><option value="Walk">Walk</option>
+            <option value="Cycling">Cycling</option><option value="HIIT">HIIT</option>
+            <option value="Yoga">Yoga</option><option value="Strength">Strength</option>
+          </select>
+          <button id="timer-start" class="btn">Start</button>
+          <button id="timer-stop" class="btn ghost" disabled>Stop & Log</button>
+        </div>
+        <p class="muted">When you stop, we’ll log duration automatically. You can edit calories/steps later.</p>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="settings" class="tab-panel" role="tabpanel" aria-labelledby="Settings">
+      <div class="card">
+        <h3>Goals</h3>
+        <form id="goals-form" class="form grid three">
+          <label><span>Daily Steps</span><input id="goal-steps" type="number" min="1000" step="500" /></label>
+          <label><span>Daily Active Minutes</span><input id="goal-mins" type="number" min="10" step="5" /></label>
+          <label><span>Daily Calories</span><input id="goal-cals" type="number" min="100" step="50" /></label>
+          <div class="actions full"><button class="btn" type="submit">Save Goals</button></div>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Data</h3>
+        <div class="actions">
+          <button id="export-json" class="btn">Export JSON</button>
+          <button id="clear-data" class="btn danger">Clear All Data</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span class="muted">© FitTrack — your daily movement, visualized.</span>
+  </footer>
+
+  <template id="workout-row-tpl">
+    <tr>
+      <td class="w-date"></td>
+      <td class="w-type"></td>
+      <td class="w-duration"></td>
+      <td class="w-calories"></td>
+      <td class="w-steps"></td>
+      <td class="w-notes"></td>
+      <td class="w-actions">
+        <button class="icon-btn edit" title="Edit">✏️</button>
+        <button class="icon-btn delete" title="Delete">🗑️</button>
+      </td>
+    </tr>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
